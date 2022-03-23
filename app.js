@@ -34,7 +34,7 @@ app.route("/articles")
     });
     article.save(function(err){
       if (!err){
-        res.send("success")
+        res.send("success");
       } else {
         res.send(err);
       }
@@ -56,11 +56,49 @@ app.route("/articles/:articleTitle")
   .get(function(req, res){
     Article.findOne({title: req.params.articleTitle}, function(err, docs) {
       if(docs) {
-        res.send(docs)
+        res.send(docs);
       } else {
         res.send("No articles found");
       }
     });
+  })
+  .put(function(req, res){
+    Article.replaceOne(
+      {title: req.params.articleTitle},
+      {title: req.body.title, content: req.body.content},
+      function(err) {
+        if(!err) {
+          res.send("successfully updated");
+        } else {
+          res.send(err);
+        }
+      }
+    );
+  })
+  .patch(function(req, res){
+    Article.updateOne(
+      {title: req.params.articleTitle},
+      {$set: req.body},
+      function(err){
+        if(!err) {
+          res.send("successfully updated");
+        } else {
+          res.send(err);
+        }
+      }
+    );
+  })
+  .delete(function(req, res){
+    Article.deleteOne(
+      {title: req.params.articleTitle},
+      function(err) {
+        if(!err) {
+          res.send("successfully deleted");
+        } else {
+          res.send(err);
+        }
+      }
+    );
   });
 
 app.listen(3000, function() {
